@@ -220,27 +220,96 @@ Dropdown:OnChanged(function(V)
     Select = v
 end)
 
-Tabs.General:AddButton({
-    Title = "Refresh",
-    Description = "Refresh selected player",
-    Callback = function()
-           table.clear(players)
+    Tabs.TP:AddButton({
+        Title = "Refresh",
+        Description = "Refresh",
+        Callback = function()
+            Window:Dialog({
+                Title = "Refresh",
+                Content = "Refresh",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                               table.clear(players)
 for i,v in pairs(game:GetService("Players"):GetChildren()) do
    table.insert(players,v.Name)
 end
-    end
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("no")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+    Tabs.TP:AddButton({
+        Title = "Teleport to Player",
+        Description = "Teleport to the selected player",
+        Callback = function()
+            Window:Dialog({
+                Title = "Teleport to Player",
+                Content = "Teleport to the selected player",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Select].Character.HumanoidRootPart.CFrame
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("no")
+                        end
+                    }
+                }
+            })
+        end
+    })
+
+local Dropdown = Tabs.General:AddDropdown("Dropdown", {
+    Title = "Dropdown",
+    Values = {},  
+    Multi = false,
+    Default = 1,
 })
 
-Tabs.General:AddButton({
-    Title = "Teleport to Player",
-    Description = "Teleport to the selected player",
+
+for _, npc in pairs(game:GetService("Workspace").NPC:GetChildren()) do
+    table.insert(Dropdown.Values, npc.Name)
+end
+
+Dropdown:SetValue("None")
+
+Dropdown:OnChanged(function(Value)
+    print("Dropdown changed:", Value)
+end)
+
+Tabs.TP:AddButton({
+    Title = "Teleport to NPC",
+    Description = "Teleport to the selected NPC",
     Callback = function()
-         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Select].Character.HumanoidRootPart.CFrame
+        local selectedNPCName = Dropdown.Values[Dropdown.Default]
+        if selectedNPCName and selectedNPCName ~= "None" then
+            
+            local selectedNPC = game:GetService("Workspace").NPC:FindFirstChild(selectedNPCName)
+            if selectedNPC then
+                game.Players.LocalPlayer.Character:MoveTo(selectedNPC.Position)
+                print("Teleported to NPC:", selectedNPCName)
+            else
+                print("NPC not found.")
+            end
+        else
+            print("No NPC selected.")
+        end
     end
 })
-
-
-
 
 
 
