@@ -22,67 +22,170 @@ local Tabs = {
 
 local Options = Fluent.Options
 
-MONS = {}
 
--- ตรวจสอบว่าชื่อที่ได้จาก game:GetService("Workspace").Lives ไม่มีใน game.Players หรือไม่
-for i, v in pairs(game.Workspace.Lives:GetChildren()) do
-    if not game.Players:FindFirstChild(v.Name) then
-        MONS[v.Name] = true
-    end
+
+
+
+    local Dropdown = Tabs.General:AddDropdown("Boss", {
+        Title = "Boss",
+        Values = {"Shadow", "Gojo", "Kashimo", "Sukuna", "Snow Bandit Leader", "Shank", "Monkey King", "Sand Man", "Bomb Man", "Bandit Leader", "Artoria", "Uraume", "Gojo [Unleashed]", "Sukuna [Half Power]", "Rimuru", "Killua"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:SetValue("None")
+
+    Dropdown:OnChanged(function(Value)
+
+    end)
+
+
+
+
+
+    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm Boss", Default = false })
+
+    Toggle:OnChanged(function(Value)
+                 _G.AutoFarm = Value
+    while _G.AutoFarm do wait()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Lives[Select].HumanoidRootPart.CFrame * CFrame.new(0,0,10)
 end
 
-local Dropdown = Tabs.General:AddDropdown("SelectWeapon", {
-    Title = "SelectWeapon",
-    Values = MONS,
-    Multi = false,
-    Default = 1,
-})
+    end)
 
-Dropdown:SetValue("None")
+    Options.MyToggle:SetValue(false)
 
-Dropdown:OnChanged(function(currentOption)
-    Select = currentOption
-end)
 
-local Toggle = Tabs.General:AddToggle("", {Title = "Auto Farm Mon", Default = false })
 
-Toggle:OnChanged(function(e)
-    _G.AutoFarm = e
-    while _G.AutoFarm do
-        wait()
-        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            local target = game.Workspace.Lives[Select]
-            if target and target:FindFirstChild("HumanoidRootPart") then
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 0, 10)
-            end
+
+
+    Tabs.General:AddButton({
+        Title = "Button",
+        Description = "Very important button",
+        Callback = function()
+            Window:Dialog({
+                Title = "Title",
+                Content = "This is a dialog",
+                Buttons = {
+                    {
+                        Title = "Confirm",
+                        Callback = function()
+                            print("Confirmed the dialog.")
+                        end
+                    },
+                    {
+                        Title = "Cancel",
+                        Callback = function()
+                            print("Cancelled the dialog.")
+                        end
+                    }
+                }
+            })
         end
-    end
-end)
+    })
 
-local Button = Tabs.General:AddButton({
-    Title = "Farm",
-    Description = "Start auto farming",
-    Callback = function()
-        _G.AutoFarm = true
-    end
-})
 
-local Button = Tabs.General:AddButton({
-    Title = "Stop",
-    Description = "Stop auto farming",
-    Callback = function()
-        _G.AutoFarm = false
-    end
-})
 
-Options.MyToggle:SetValue(false)
+    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Toggle", Default = false })
+
+    Toggle:OnChanged(function()
+        print("Toggle changed:", Options.MyToggle.Value)
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+
+    
+    local Slider = Tabs.General:AddSlider("Slider", {
+        Title = "Slider",
+        Description = "This is a slider",
+        Default = 2,
+        Min = 0,
+        Max = 5,
+        Rounding = 1,
+        Callback = function(Value)
+            print("Slider was changed:", Value)
+        end
+    })
+
+    Slider:OnChanged(function(Value)
+        print("Slider changed:", Value)
+    end)
+
+    Slider:SetValue(3)
+
+
+
+    local Dropdown = Tabs.General:AddDropdown("Dropdown", {
+        Title = "Dropdown",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:SetValue("four")
+
+    Dropdown:OnChanged(function(Value)
+        print("Dropdown changed:", Value)
+    end)
+
+
+    
+    local MultiDropdown = Tabs.General:AddDropdown("MultiDropdown", {
+        Title = "Dropdown",
+        Description = "You can select multiple values.",
+        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
+        Multi = true,
+        Default = {"seven", "twelve"},
+    })
+
+    MultiDropdown:SetValue({
+        three = true,
+        five = true,
+        seven = false
+    })
+
+    MultiDropdown:OnChanged(function(Value)
+        local Values = {}
+        for Value, State in next, Value do
+            table.insert(Values, Value)
+        end
+        print("Mutlidropdown changed:", table.concat(Values, ", "))
+    end)
+
+
+
+ 
+
+
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- InterfaceManager (Allows you to have a interface managment system)
+
+-- Hand the library over to our managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+
+-- Ignore keys that are used by ThemeManager.
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings()
+
+-- You can add indexes of elements the save manager should ignore
+SaveManager:SetIgnoreIndexes({})
+
+-- use case for doing it this way:
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
+InterfaceManager:SetFolder("FluentScriptHub")
+SaveManager:SetFolder("FluentScriptHub/specific-game")
 
 InterfaceManager:BuildInterfaceSection(Tabs.Settings)
 SaveManager:BuildConfigSection(Tabs.Settings)
 
+
 Window:SelectTab(1)
+
 
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
-
