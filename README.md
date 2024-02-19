@@ -115,38 +115,7 @@ spawn(function()
 end)
 
 
-    Tabs.General:AddButton({
-        Title = "Button",
-        Description = "Very important button",
-        Callback = function()
-            Window:Dialog({
-                Title = "Title",
-                Content = "This is a dialog",
-                Buttons = {
-                    {
-                        Title = "Confirm",
-                        Callback = function()
-                            print("Confirmed the dialog.")
-                        end
-                    },
-                    {
-                        Title = "Cancel",
-                        Callback = function()
-                            print("Cancelled the dialog.")
-                        end
-                    }
-                }
-            })
-        end
-    })
 
-    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Toggle", Default = false })
-
-    Toggle:OnChanged(function()
-        print("Toggle changed:", Options.MyToggle.Value)
-    end)
-
-    Options.MyToggle:SetValue(false)
 
 
 
@@ -231,60 +200,42 @@ end)
 
     Options.MyToggle:SetValue(false)
 
+players = {}
+ 
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+   table.insert(players,v.Name)
+end
+
 
 local Dropdown = Tabs.TP:AddDropdown("Player", {
     Title = "Player",
-    Values = {},
+    Values = players,
     Multi = false,
     Default = 1,
 })
 
 Dropdown:SetValue("None")
 
-Dropdown:OnChanged(function(Value)
-
-    print("Selected Player:", Value)
+Dropdown:OnChanged(function(V)
+    Select = v
 end)
 
-
-for _, player in pairs(game.Players:GetPlayers()) do
-    table.insert(Dropdown.Values, player.Name)
+Tabs.General:AddButton({
+    Title = "Refresh",
+    Description = "Refresh selected player",
+    Callback = function()
+           table.clear(players)
+for i,v in pairs(game:GetService("Players"):GetChildren()) do
+   table.insert(players,v.Name)
 end
-
-
-game.Players.PlayerAdded:Connect(function(player)
-    table.insert(Dropdown.Values, player.Name)
-    Dropdown.Default = #Dropdown.Values
-end)
-
-
-game.Players.PlayerRemoving:Connect(function(player)
-    local playerName = player.Name
-    for i, name in ipairs(Dropdown.Values) do
-        if name == playerName then
-            table.remove(Dropdown.Values, i)
-            if Dropdown.Default == i then
-                Dropdown.Default = 1
-            end
-            break
-        end
     end
-end)
+})
 
-Tabs.TP:AddButton({
+Tabs.General:AddButton({
     Title = "Teleport to Player",
     Description = "Teleport to the selected player",
     Callback = function()
-        local selectedPlayerName = Dropdown.Values[Dropdown.Default]
-        if selectedPlayerName and selectedPlayerName ~= "None" then
-           
-            local selectedPlayer = game.Players:FindFirstChild(selectedPlayerName)
-            if selectedPlayer then
-                game.Players.LocalPlayer.Character:MoveTo(selectedPlayer.Character.HumanoidRootPart.Position)
-            end
-        else
-            print("No player selected")
-        end
+         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[Select].Character.HumanoidRootPart.CFrame
     end
 })
 
