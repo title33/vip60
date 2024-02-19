@@ -43,23 +43,21 @@ MultiDropdown:OnChanged(function(Values)
     end
 end)
 
+local ToggleAutoFarm = Tabs.General:AddToggle("ToggleAutoFarm", {Title = "Auto Farm Boss", Default = false })
 
-
-local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm Boss", Default = false })
-
-Toggle:OnChanged(function(Value)
+ToggleAutoFarm:OnChanged(function(Value)
     _G.AutoFarm = Value
 
     while _G.AutoFarm do
         wait()
-        if SelectedBoss ~= "None" then
+        for _, SelectedBoss in ipairs(MultiDropdown:GetSelected()) do
             local BossCFrame = game:GetService("Workspace").Lives[SelectedBoss].HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = BossCFrame
         end
     end
 end)
 
-Options.MyToggle:SetValue(false)
+Options.ToggleAutoFarm:SetValue(false)
 
 
 local Dropdown = Tabs.General:AddDropdown("Select weapon", {
