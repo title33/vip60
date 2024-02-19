@@ -15,14 +15,20 @@ local Window = Fluent:CreateWindow({
 --Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
     General = Window:AddTab({ Title = "General", Icon = "home" }),
-    Skil = Window:AddTab({ Title = "Skil", Icon = "database-zap" }),
-    TP = Window:AddTab({ Title = "Tp", Icon = "fast-forward" }),
+    Skil = Window:AddTab({ Title = "Skil", Icon = "atom" }),
+    TP = Window:AddTab({ Title = "Tp", Icon = "chevrons-right" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
 local Options = Fluent.Options
 
 
+local Weaponlist = {}
+local Weapon = nil
+
+for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+    table.insert(Weaponlist,v.Name)
+end
 
 
 
@@ -56,6 +62,36 @@ end)
 Options.MyToggle:SetValue(false)
 
 
+local Dropdown = Tabs.General:AddDropdown("Select weapon", {
+    Title = "Select weapon",
+    Values = Weaponlist,
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:SetValue("None")
+
+Dropdown:OnChanged(function(currentOption)
+     Weapon = currentOption
+end)
+
+    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Equip", Default = false })
+
+    Toggle:OnChanged(function(a)
+       AutoEquiped = a
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+spawn(function()
+while wait() do
+if AutoEquiped then
+pcall(function()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Weapon))
+end)
+end
+end
+end)
 
 
 
