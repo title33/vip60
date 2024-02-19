@@ -22,28 +22,38 @@ local Tabs = {
 
 local Options = Fluent.Options
 
-
 local Weaponlist = {}
 local Weapon = nil
 
-for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
-    table.insert(Weaponlist,v.Name)
+for i, v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+    table.insert(Weaponlist, v.Name)
 end
 
-
-
-local Dropdown = Tabs.General:AddDropdown("Boss", {
-    Title = "Boss",
-    Values = {"Shadow", "Gojo", "Kashimo", "Sukuna", "Snow Bandit Leader", "Shank", "Monkey King", "Sand Man", "Bomb Man", "Bandit Leader", "Artoria", "Uraume", "Gojo [Unleashed]", "Sukuna [Half Power]", "Rimuru", "Killua"},
-    Multi = false,
-    Default = 1,
+local MultiDropdown = Tabs.General:AddDropdown("MultiDropdown", {
+    Title = "Weapon Selector",
+    Description = "Select multiple weapons.",
+    Values = Weaponlist,  -- Use the weapon list as values for the MultiDropdown
+    Multi = true,
+    Default = {"Shadow", "Gojo"},  -- Set default values
 })
 
-Dropdown:SetValue("None")
+MultiDropdown:SetValue({
+    Shadow = false,
+    Gojo = false,
+    Kashimo = false
+    -- Add more default values as needed
+})
 
-Dropdown:OnChanged(function(Value)
-    SelectedBoss = Value
+MultiDropdown:OnChanged(function(Values)
+    local SelectedWeapons = {}
+    for Weapon, State in pairs(Values) do
+        if State then
+            table.insert(SelectedWeapons, Weapon)
+        end
+    end
+    print("MultiDropdown changed:", table.concat(SelectedWeapons, ", "))
 end)
+
 
 local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm Boss", Default = false })
 
