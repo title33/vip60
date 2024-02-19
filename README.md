@@ -15,7 +15,7 @@ local Window = Fluent:CreateWindow({
 --Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, icons are optional
 local Tabs = {
     General = Window:AddTab({ Title = "General", Icon = "home" }),
-    Skil = Window:AddTab({ Title = "Skil", Icon = "atom" }),
+    Skil = Window:AddTab({ Title = "Skil", Icon = "battery-charging" }),
     TP = Window:AddTab({ Title = "Tp", Icon = "chevrons-right" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
@@ -93,6 +93,26 @@ end
 end
 end)
 
+    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
+
+    Toggle:OnChanged(function()
+       Autoattack = l
+    end)
+
+    Options.MyToggle:SetValue(false)
+
+spawn(function()
+    while wait() do
+        if Autoattack then
+            game:GetService("RunService").RenderStepped:Connect(function()
+                pcall(function()
+                    game:GetService('VirtualUser'):CaptureController()
+                    game:GetService('VirtualUser'):Button1Down(Vector2.new(1280, 672))
+                end)
+            end)
+        end
+    end
+end)
 
 
     Tabs.General:AddButton({
