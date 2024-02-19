@@ -24,7 +24,7 @@ local Options = Fluent.Options
 
 MONS = {}
 
--- ตรวจสอบว่าชื่อที่ได้จาก game:GetService("Workspace").Lives ไม่มีใน game.Players หรือไม่
+
 for i, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
     if not game.Players[v.Name] then
         table.insert(MONS, v.Name)
