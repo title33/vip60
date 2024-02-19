@@ -23,37 +23,44 @@ local Tabs = {
 local Options = Fluent.Options
 
 MONS = {}
- 
-for i,v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
-    table.insert(MONS,v.Name)
+
+-- ตรวจสอบว่าชื่อที่ได้จาก game:GetService("Workspace").Lives ไม่มีใน game.Players หรือไม่
+for i, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
+    if not game.Players[v.Name] then
+        table.insert(MONS, v.Name)
+    end
 end
 
+local Dropdown = Tabs.General:AddDropdown("SelectWeapon", {
+    Title = "SelectWeapon",
+    Values = MONS,
+    Multi = false,
+    Default = 1,
+})
 
-    local Dropdown = Tabs.General:AddDropdown("SelectWeapon", {
-        Title = "SelectWeapon",
-        Values = MONS,
-        Multi = false,
-        Default = 1,
-    })
+Dropdown:SetValue("None")
 
-    Dropdown:SetValue("None")
+Dropdown:OnChanged(function(currentOption)
+    Select = currentOption
+end)
 
-    Dropdown:OnChanged(function(currentOption)
-        Select = currentOption
-    end)
+local Toggle = Tabs.General:AddToggle("", {Title = "Auto Farm Mon", Default = false })
 
-
-    local Toggle = Tabs.General:AddToggle("", {Title = "Auto Farm Mon", Default = false })
-
-    Toggle:OnChanged(function(e)
+Toggle:OnChanged(function(e)
     _G.AutoFarm = e
-    while _G.AutoFarm do wait()
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Lives[Select].HumanoidRootPart.CFrame * CFrame.new(0,0,10)
-end
-        
-    end)
+    while _G.AutoFarm do
+        wait()
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local target = game:GetService("Workspace").Lives[Select]
+            if target and target:FindFirstChild("HumanoidRootPart") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = target.HumanoidRootPart.CFrame * CFrame.new(0, 0, 10)
+            end
+        end
+    end
+end)
 
-    Options.MyToggle:SetValue(false)
+Options.MyToggle:SetValue(false)
+
 
 
 
