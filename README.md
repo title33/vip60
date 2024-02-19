@@ -273,7 +273,7 @@ end
         end
     })
 
-local Dropdown = Tabs.General:AddDropdown("Dropdown", {
+local Dropdown = Tabs.TP:AddDropdown("Dropdown", {
     Title = "Dropdown",
     Values = {},  
     Multi = false,
