@@ -24,44 +24,12 @@ local Options = Fluent.Options
 
 MONS = {}
 
-local Weaponlist = {}
-local Weapon = nil
-
-
-
-for i,v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
-    table.insert(Weaponlist,v.Name)
-end
-
+-- ตรวจสอบว่าชื่อที่ได้จาก game:GetService("Workspace").Lives ไม่มีใน game.Players หรือไม่
 for i, v in pairs(game.Workspace.Lives:GetChildren()) do
     if not game.Players:FindFirstChild(v.Name) then
         MONS[v.Name] = true
     end
 end
-
-
-    local Dropdown = Tabs.General:AddDropdown("Select weapon", {
-        Title = "Select weapon",
-        Values = ,
-        Multi = false,
-        Default = 1,
-    })
-
-    Dropdown:SetValue("None")
-
-    Dropdown:OnChanged(function(currentOption)
-         Weapon = currentOption
-    end)
-
-
-local Toggle = Tabs.General:AddToggle("", {Title = "Auto Auto Equip", Default = false })
-
-Toggle:OnChanged(function(e)
-AutoEquiped = a
-end)
-
-
-
 
 local Dropdown = Tabs.General:AddDropdown("SelectWeapon", {
     Title = "SelectWeapon",
@@ -91,9 +59,6 @@ Toggle:OnChanged(function(e)
     end
 end)
 
-
-
-
 local Button = Tabs.General:AddButton({
     Title = "Farm",
     Description = "Start auto farming",
@@ -109,17 +74,6 @@ local Button = Tabs.General:AddButton({
         _G.AutoFarm = false
     end
 })
-
-spawn(function()
-while wait() do
-if AutoEquiped then
-pcall(function()
-game.Players.LocalPlayer.Character.Humanoid:EquipTool(game:GetService("Players").LocalPlayer.Backpack:FindFirstChild(Weapon))
-end)
-end
-end
-end)
-
 
 Options.MyToggle:SetValue(false)
 
