@@ -53,7 +53,7 @@ Toggle:OnChanged(function(Value)
     while _G.AutoFarm do
         wait()
         if SelectedBoss ~= "None" then
-            local BossCFrame = game:GetService("Workspace").Lives[SelectedBoss].HumanoidRootPart.CFrame * CFrame.new(0, 0, 10)
+            local BossCFrame = game:GetService("Workspace").Lives[SelectedBoss].HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
             game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = BossCFrame
         end
     end
@@ -230,6 +230,69 @@ end)
     end)
 
     Options.MyToggle:SetValue(false)
+
+
+local Dropdown = Tabs.TP:AddDropdown("Player", {
+    Title = "Player",
+    Values = {},
+    Multi = false,
+    Default = 1,
+})
+
+Dropdown:SetValue("None")
+
+Dropdown:OnChanged(function(Value)
+
+    print("Selected Player:", Value)
+end)
+
+
+for _, player in pairs(game.Players:GetPlayers()) do
+    table.insert(Dropdown.Values, player.Name)
+end
+
+
+game.Players.PlayerAdded:Connect(function(player)
+    table.insert(Dropdown.Values, player.Name)
+    Dropdown.Default = #Dropdown.Values
+end)
+
+
+game.Players.PlayerRemoving:Connect(function(player)
+    local playerName = player.Name
+    for i, name in ipairs(Dropdown.Values) do
+        if name == playerName then
+            table.remove(Dropdown.Values, i)
+            if Dropdown.Default == i then
+                Dropdown.Default = 1
+            end
+            break
+        end
+    end
+end)
+
+Tabs.TP:AddButton({
+    Title = "Teleport to Player",
+    Description = "Teleport to the selected player",
+    Callback = function()
+        local selectedPlayerName = Dropdown.Values[Dropdown.Default]
+        if selectedPlayerName and selectedPlayerName ~= "None" then
+           
+            local selectedPlayer = game.Players:FindFirstChild(selectedPlayerName)
+            if selectedPlayer then
+                game.Players.LocalPlayer.Character:MoveTo(selectedPlayer.Character.HumanoidRootPart.Position)
+            end
+        else
+            print("No player selected")
+        end
+    end
+})
+
+
+
+
+
+
 
 -- Addons:
 -- SaveManager (Allows you to have a configuration system)
