@@ -95,8 +95,8 @@ end)
 
     local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Attack", Default = false })
 
-    Toggle:OnChanged(function()
-       Autoattack = l
+    Toggle:OnChanged(function(o)
+       Autoattack = o
     end)
 
     Options.MyToggle:SetValue(false)
@@ -140,8 +140,6 @@ end)
         end
     })
 
-
-
     local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Toggle", Default = false })
 
     Toggle:OnChanged(function()
@@ -151,68 +149,87 @@ end)
     Options.MyToggle:SetValue(false)
 
 
+
+    local Toggle = Tabs.Skil:AddToggle("Auto Skil Z", {Title = "Auto Skil Z", Default = false })
+
+    Toggle:OnChanged(function(G)
+       _G.AutoZ = G
+
+spawn(function()
+while wait(.1) do
+    pcall(function()
+if _G.AutoZ then
+game:GetService("VirtualInputManager"):SendKeyEvent(true,"Z",false,game)
+                end
+        end)
+   end
+end)
+
+    end)
+
+    Options.MyToggle:SetValue(false)
     
-    local Slider = Tabs.General:AddSlider("Slider", {
-        Title = "Slider",
-        Description = "This is a slider",
-        Default = 2,
-        Min = 0,
-        Max = 5,
-        Rounding = 1,
-        Callback = function(Value)
-            print("Slider was changed:", Value)
-        end
-    })
 
-    Slider:OnChanged(function(Value)
-        print("Slider changed:", Value)
+
+    local Toggle = Tabs.Skil:AddToggle("Auto Skil X", {Title = "Auto Skil X", Default = false })
+
+    Toggle:OnChanged(function(G)
+       _G.AutoX = G
+
+spawn(function()
+while wait(.1) do
+    pcall(function()
+if _G.AutoX then
+game:GetService("VirtualInputManager"):SendKeyEvent(true,"X",false,game)
+                end
+        end)
+   end
+end)
+
     end)
 
-    Slider:SetValue(3)
+    Options.MyToggle:SetValue(false)
 
 
+    local Toggle = Tabs.Skil:AddToggle("Auto Skil C", {Title = "Auto Skil C", Default = false })
 
-    local Dropdown = Tabs.General:AddDropdown("Dropdown", {
-        Title = "Dropdown",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
-        Multi = false,
-        Default = 1,
-    })
+    Toggle:OnChanged(function(G)
+       _G.AutoC = G
 
-    Dropdown:SetValue("four")
+spawn(function()
+while wait(.1) do
+    pcall(function()
+if _G.AutoC then
+game:GetService("VirtualInputManager"):SendKeyEvent(true,"C",false,game)
+                end
+        end)
+   end
+end)
 
-    Dropdown:OnChanged(function(Value)
-        print("Dropdown changed:", Value)
     end)
 
-
-    
-    local MultiDropdown = Tabs.General:AddDropdown("MultiDropdown", {
-        Title = "Dropdown",
-        Description = "You can select multiple values.",
-        Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
-        Multi = true,
-        Default = {"seven", "twelve"},
-    })
-
-    MultiDropdown:SetValue({
-        three = true,
-        five = true,
-        seven = false
-    })
-
-    MultiDropdown:OnChanged(function(Value)
-        local Values = {}
-        for Value, State in next, Value do
-            table.insert(Values, Value)
-        end
-        print("Mutlidropdown changed:", table.concat(Values, ", "))
-    end)
-
-
-
+    Options.MyToggle:SetValue(false)
  
 
+
+    local Toggle = Tabs.Skil:AddToggle("Auto Skil V", {Title = "Auto Skil V", Default = false })
+
+    Toggle:OnChanged(function(G)
+       _G.AutoV = G
+
+spawn(function()
+while wait(.1) do
+    pcall(function()
+if _G.AutoV then
+game:GetService("VirtualInputManager"):SendKeyEvent(true,"V",false,game)
+                end
+        end)
+   end
+end)
+
+    end)
+
+    Options.MyToggle:SetValue(false)
 
 -- Addons:
 -- SaveManager (Allows you to have a configuration system)
