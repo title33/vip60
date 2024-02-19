@@ -26,34 +26,34 @@ local Options = Fluent.Options
 
 
 
-    local Dropdown = Tabs.General:AddDropdown("Boss", {
-        Title = "Boss",
-        Values = {"Shadow", "Gojo", "Kashimo", "Sukuna", "Snow Bandit Leader", "Shank", "Monkey King", "Sand Man", "Bomb Man", "Bandit Leader", "Artoria", "Uraume", "Gojo [Unleashed]", "Sukuna [Half Power]", "Rimuru", "Killua"},
-        Multi = false,
-        Default = 1,
-    })
+local Dropdown = Tabs.General:AddDropdown("Boss", {
+    Title = "Boss",
+    Values = {"Shadow", "Gojo", "Kashimo", "Sukuna", "Snow Bandit Leader", "Shank", "Monkey King", "Sand Man", "Bomb Man", "Bandit Leader", "Artoria", "Uraume", "Gojo [Unleashed]", "Sukuna [Half Power]", "Rimuru", "Killua"},
+    Multi = false,
+    Default = 1,
+})
 
-    Dropdown:SetValue("None")
+Dropdown:SetValue("None")
 
-    Dropdown:OnChanged(function(Value)
+Dropdown:OnChanged(function(Value)
+    SelectedBoss = Value
+end)
 
-    end)
+local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm Boss", Default = false })
 
+Toggle:OnChanged(function(Value)
+    _G.AutoFarm = Value
 
+    while _G.AutoFarm do
+        wait()
+        if SelectedBoss ~= "None" then
+            local BossCFrame = game:GetService("Workspace").Lives[SelectedBoss].HumanoidRootPart.CFrame * CFrame.new(0, 0, 10)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = BossCFrame
+        end
+    end
+end)
 
-
-
-    local Toggle = Tabs.General:AddToggle("MyToggle", {Title = "Auto Farm Boss", Default = false })
-
-    Toggle:OnChanged(function(Value)
-                 _G.AutoFarm = Value
-    while _G.AutoFarm do wait()
-game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Lives[Select].HumanoidRootPart.CFrame * CFrame.new(0,0,10)
-end
-
-    end)
-
-    Options.MyToggle:SetValue(false)
+Options.MyToggle:SetValue(false)
 
 
 
